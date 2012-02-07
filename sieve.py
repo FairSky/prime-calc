@@ -42,19 +42,15 @@ def find_primes_in_range(lower_bound, upper_bound, window):
         
         curr_time = time.time()
         
-        if curr_time - old_time > .09:
+        if curr_time - old_time > 1:
             window.progress_bar.setValue(curr_prime)
             old_time = curr_time
         
         if curr_prime <= upper_bound:
             primes = primes + str(curr_prime) + " "
     
-    time.sleep(.08)
-    
     # Set the progress bar to 100% in case the upper bound was not prime.
     window.progress_bar.setValue(upper_bound)
-    
-    time.sleep(.08)
     
     window.text_area.insertPlainText(primes)
     
