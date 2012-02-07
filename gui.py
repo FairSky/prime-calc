@@ -52,7 +52,8 @@ class Form(QDialog):
         thread_storage = Queue.Queue()
         
         self.progress_bar = QProgressBar(self)
-        self.progress_bar.setRange(self.lower_bound.value(), self.upper_bound.value())
+        self.progress_bar.setRange(0, 100)
+        # self.progress_bar.setRange(self.lower_bound.value(), self.upper_bound.value())
         
         self.layout.addWidget(self.progress_bar, 2, 1, 1, 3)
         self.setLayout(self.layout)

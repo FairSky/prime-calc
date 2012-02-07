@@ -16,17 +16,24 @@ def is_prime(input_number):
             return True
 
 def find_primes_in_range(lower_bound, upper_bound, primes_found, progress_bar = None):
-    for input_number in xrange(lower_bound, upper_bound + 1, 2):  
+    curr_progress = 0
+    past_progress = 0
+    
+    for input_number in xrange(lower_bound, upper_bound + 1, 2):
+        if progress_bar != None:
+            curr_progress = int(100 * ((input_number - lower_bound) * 1.0 / (upper_bound - lower_bound)))
+            
+            if curr_progress > past_progress + 4:
+                progress_bar.setValue(curr_progress)            
+                past_progress = curr_progress
+            
         if is_prime(input_number) and lower_bound <= input_number <= upper_bound:                
             primes_found.append(input_number)
-            
-            if progress_bar != None:
-                progress_bar.setValue(input_number)
     
     # In the event that the upper bound is not prime,
     # we still want to push the progress bar to 100%.
     if progress_bar != None:
-        progress_bar.setValue(upper_bound)
+        progress_bar.setValue(100)
     
     return primes_found
 
