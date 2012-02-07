@@ -1,6 +1,7 @@
 import sys
 import random
 import sieve
+import Queue
 from PySide.QtCore import *
 from PySide.QtGui import *
 from threading import Thread
@@ -48,19 +49,22 @@ class Form(QDialog):
             print random_number, "is not prime."
 
     def get_primes(self):
+        thread_storage = Queue.Queue()
+        
         self.progress_bar = QProgressBar(self)
         self.progress_bar.setRange(self.lower_bound.value(), self.upper_bound.value())
         
         self.layout.addWidget(self.progress_bar, 2, 1, 1, 3)
         self.setLayout(self.layout)
         
-        # t = Thread(target=self.progress_bar)
+        t = Thread(target=sieve.search_range, args=(self.lower_bound.value(), self.upper_bound.value(), self.progress_bar, thread_storage))
+        t.start()
         
-        my_primes = sieve.search_range(self.lower_bound.value(), self.upper_bound.value(), self.progress_bar)
+        #my_primes = thread_storage.get_nowait()
         
-        for item in my_primes:
-            print item
-
+        #for item in my_primes:
+            #print item
+            
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     

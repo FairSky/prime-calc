@@ -25,7 +25,7 @@ def find_primes_in_range(lower_bound, upper_bound, primes_found, progress_bar = 
     
     return primes_found
 
-def search_range(lower_bound, upper_bound, progress_bar = None):
+def search_range(lower_bound, upper_bound, progress_bar = None, thread_storage = None):
     """
     search_range(lower_bound, upper_bound) finds primes in the range lower_bound to upper_bound and then returns a list.
     Both inputs must be positive integers.
@@ -45,6 +45,9 @@ def search_range(lower_bound, upper_bound, progress_bar = None):
         primes_found.append(2)
         lower_bound = 3
     
+    #if thread_storage != None:
+        #thread_storage.put_nowait(find_primes_in_range(lower_bound, upper_bound, primes_found, progress_bar))
+    #else:
     return find_primes_in_range(lower_bound, upper_bound, primes_found, progress_bar)
 
 # This isn't the fastest way, but it is the simplest for our purposes.
