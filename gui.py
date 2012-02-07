@@ -40,7 +40,7 @@ class Form(QDialog):
             self.alert.setText("The lower bound must be less than the upper bound.")
             self.alert.show()
 
-    def get_single_prime():
+    def get_single_prime(self):
         random_number = random.randint(3, 5000)
         
         if sieve.find_single(random_number) == True:

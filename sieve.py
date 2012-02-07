@@ -23,6 +23,11 @@ def find_primes_in_range(lower_bound, upper_bound, primes_found, progress_bar = 
             if progress_bar != None:
                 progress_bar.setValue(input_number)
     
+    # In the event that the upper bound is not prime,
+    # we still want to push the progress bar to 100%.
+    if progress_bar != None:
+        progress_bar.setValue(upper_bound)
+    
     return primes_found
 
 def search_range(lower_bound, upper_bound, progress_bar = None, thread_storage = None):
