@@ -54,7 +54,7 @@ class Form(QDialog):
         self.layout.addWidget(self.progress_bar, 2, 1, 1, 3)
         self.setLayout(self.layout)
         
-        t = Thread(target=self.progress_bar)
+        # t = Thread(target=self.progress_bar)
         
         my_primes = sieve.search_range(self.lower_bound.value(), self.upper_bound.value(), self.progress_bar)
         
