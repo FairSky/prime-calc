@@ -3,6 +3,7 @@ import random
 import sieve
 from PySide.QtCore import *
 from PySide.QtGui import *
+from threading import Thread
 
 
 class Form(QDialog):
@@ -53,7 +54,9 @@ class Form(QDialog):
         self.layout.addWidget(self.progress_bar, 2, 1, 1, 3)
         self.setLayout(self.layout)
         
-        my_primes = sieve.search_range(self.lower_bound.value(), self.upper_bound.value())
+        t = Thread(target=self.progress_bar)
+        
+        my_primes = sieve.search_range(self.lower_bound.value(), self.upper_bound.value(), self.progress_bar)
         
         for item in my_primes:
             print item
