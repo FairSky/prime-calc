@@ -1,7 +1,7 @@
 import math
 import sys
 
-# Double Python's recursion limit.
+# Double Python's recursion limit, but ugh.
 sys.setrecursionlimit(3000)
 
 # Prime Number Sieve using recursion by Scott Rothrock

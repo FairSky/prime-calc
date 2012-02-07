@@ -1,7 +1,7 @@
 import sys
-import random
 import sieve
 import Queue
+import time
 from PySide.QtCore import *
 from PySide.QtGui import *
 from threading import Thread
@@ -13,10 +13,10 @@ class Form(QDialog):
         self.setWindowTitle("Prime Calculator")
         
         self.lower_bound = QSpinBox()
-        self.lower_bound.setRange(1, 1000000)
+        self.lower_bound.setRange(1, 10000000)
         
         self.upper_bound = QSpinBox()
-        self.upper_bound.setRange(2, 1000000)
+        self.upper_bound.setRange(2, 10000000)
         
         self.lower_bound.valueChanged.connect(self.check_spinbox_values)
         self.upper_bound.valueChanged.connect(self.check_spinbox_values)
@@ -24,9 +24,23 @@ class Form(QDialog):
         self.button = QPushButton("Find Primes")
         
         self.layout = QGridLayout()
-        self.layout.addWidget(self.lower_bound, 1, 1)
-        self.layout.addWidget(self.upper_bound, 1, 2)
-        self.layout.addWidget(self.button, 1, 3)
+        self.layout.addItem(QSpacerItem(20, 200), 1, 1, 3)
+        self.layout.addItem(QSpacerItem(30, 10), 1, 2)
+        self.layout.addWidget(self.lower_bound, 1, 3)
+        self.layout.addWidget(self.upper_bound, 1, 4)
+        self.layout.addWidget(self.button, 1, 5)
+        self.layout.addItem(QSpacerItem(30, 10), 1, 6)
+        self.layout.addItem(QSpacerItem(20, 200), 1, 7, 3)
+        
+        self.progress_bar = QProgressBar(self)
+        self.progress_bar.setRange(self.lower_bound.value(), self.upper_bound.value())
+        self.progress_bar.setTextVisible(False)
+        
+        self.layout.addWidget(self.progress_bar, 2, 2, 1, 5)
+        
+        self.text_area = QPlainTextEdit(self)
+        
+        self.layout.addWidget(self.text_area, 3, 2, 1, 5)
         self.setLayout(self.layout)
         
         self.button.clicked.connect(self.get_primes)
@@ -40,31 +54,12 @@ class Form(QDialog):
             self.alert.setText("The lower bound must be less than the upper bound.")
             self.alert.show()
 
-    def get_single_prime(self):
-        random_number = random.randint(3, 5000)
-        
-        if sieve.find_single(random_number) == True:
-            print random_number, "is prime!"
-        else:
-            print random_number, "is not prime."
-
     def get_primes(self):
-        thread_storage = Queue.Queue()
+        #self.progress_bar.reset()
+        self.text_area.clear()
         
-        self.progress_bar = QProgressBar(self)
-        self.progress_bar.setRange(0, 100)
-        # self.progress_bar.setRange(self.lower_bound.value(), self.upper_bound.value())
-        
-        self.layout.addWidget(self.progress_bar, 2, 1, 1, 3)
-        self.setLayout(self.layout)
-        
-        t = Thread(target=sieve.search_range, args=(self.lower_bound.value(), self.upper_bound.value(), self.progress_bar, thread_storage))
+        t = Thread(target=sieve.find_primes_in_range, args=(self.lower_bound.value(), self.upper_bound.value(), self))
         t.start()
-        
-        #my_primes = thread_storage.get_nowait()
-        
-        #for item in my_primes:
-            #print item
             
 if __name__ == '__main__':
     app = QApplication(sys.argv)
