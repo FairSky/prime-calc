@@ -13,10 +13,10 @@ class Form(QDialog):
         self.setWindowTitle("Prime Calculator")
         
         self.lower_bound = QSpinBox()
-        self.lower_bound.setRange(1, 10000000)
+        self.lower_bound.setRange(1, 4999999)
         
         self.upper_bound = QSpinBox()
-        self.upper_bound.setRange(2, 10000000)
+        self.upper_bound.setRange(2, 5000000)
         
         self.lower_bound.valueChanged.connect(self.check_spinbox_values)
         self.upper_bound.valueChanged.connect(self.check_spinbox_values)
@@ -32,15 +32,15 @@ class Form(QDialog):
         self.layout.addItem(QSpacerItem(30, 10), 1, 6)
         self.layout.addItem(QSpacerItem(20, 200), 1, 7, 3)
         
-        self.progress_bar = QProgressBar(self)
-        self.progress_bar.setRange(self.lower_bound.value(), self.upper_bound.value())
-        self.progress_bar.setTextVisible(False)
+        #self.progress_bar = QProgressBar(self)
+        #self.progress_bar.setRange(self.lower_bound.value(), self.upper_bound.value())
+        #self.progress_bar.setTextVisible(False)
         
-        self.layout.addWidget(self.progress_bar, 2, 2, 1, 5)
+        #self.layout.addWidget(self.progress_bar, 2, 2, 1, 5)
         
         self.text_area = QPlainTextEdit(self)
         
-        self.layout.addWidget(self.text_area, 3, 2, 1, 5)
+        self.layout.addWidget(self.text_area, 2, 2, 1, 5)
         self.setLayout(self.layout)
         
         self.button.clicked.connect(self.get_primes)
@@ -55,11 +55,14 @@ class Form(QDialog):
             self.alert.show()
 
     def get_primes(self):
-        #self.progress_bar.reset()
         self.text_area.clear()
         
-        t = Thread(target=sieve.find_primes_in_range, args=(self.lower_bound.value(), self.upper_bound.value(), self))
-        t.start()
+        progress_window = QProgressDialog("Searching for prime numbers...", "Abort", self.lower_bound.value(), self.upper_bound.value())
+        
+        sieve.find_primes_in_range(self.lower_bound.value(), self.upper_bound.value(), progress_window)
+        
+        #t = Thread(target=sieve.find_primes_in_range, args=(self.lower_bound.value(), self.upper_bound.value(), self))
+        #t.start()
             
 if __name__ == '__main__':
     app = QApplication(sys.argv)
