@@ -45,5 +45,15 @@ def find_primes_in_range(lower_bound, upper_bound, progress_window):
             primes.append(curr_prime)
     
     return primes
+
+def is_prime(curr_num, progress_window):
+    if curr_num % 2 == 0:
+        return False
     
+    primes = find_primes_in_range(curr_num, curr_num, progress_window)
+    
+    if primes.count(curr_num) > 0:
+        return True
+    else:
+        return False
     
