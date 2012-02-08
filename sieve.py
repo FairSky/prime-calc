@@ -1,5 +1,3 @@
-import time
-
 def prime_generator(upper_bound):
     garbage_numbers = set()
     
@@ -28,7 +26,6 @@ def trash_multiples(curr_num, upper_bound, garbage_numbers):
 
 def find_primes_in_range(lower_bound, upper_bound, progress_window):
     primes = []
-    #old_time = 0
     generator = prime_generator(upper_bound)
     
     if lower_bound == 1:
@@ -43,21 +40,9 @@ def find_primes_in_range(lower_bound, upper_bound, progress_window):
         except StopIteration:
             break
         
-        #curr_time = time.time()
-        
-        #if curr_time - old_time > 1:
-            #window.progress_bar.setValue(curr_prime)
-            #old_time = curr_time
-        
         if curr_prime <= upper_bound:
             progress_window.setValue(curr_prime)
             primes.append(curr_prime)
-            # primes = primes + str(curr_prime) + " "
-    
-    # Set the progress bar to 100% in case the upper bound was not prime.
-    #window.progress_bar.setValue(upper_bound)
-    
-    #window.text_area.insertPlainText(primes)
     
     return primes
     

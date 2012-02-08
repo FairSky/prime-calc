@@ -1,49 +1,62 @@
 import sys
 import sieve
-import Queue
-import time
 from PySide.QtCore import *
 from PySide.QtGui import *
-from threading import Thread
 
-
-class Form(QDialog):
+class window(QMainWindow):
     def __init__(self, parent = None):
-        super(Form, self).__init__(parent)
+        super(window, self).__init__(parent)
         self.setWindowTitle("Prime Calculator")
+
+        # Initialize all of our widgets.
+        self.search_box = QGroupBox("Find Primes in a Range")
+        
+        self.search_button = QPushButton("Begin Search")
+        self.search_button.clicked.connect(self.get_primes)
         
         self.lower_bound = QSpinBox()
         self.lower_bound.setRange(1, 4999999)
+        self.lower_bound.valueChanged.connect(self.check_spinbox_values)
         
         self.upper_bound = QSpinBox()
         self.upper_bound.setRange(2, 5000000)
-        
-        self.lower_bound.valueChanged.connect(self.check_spinbox_values)
         self.upper_bound.valueChanged.connect(self.check_spinbox_values)
         
-        self.button = QPushButton("Find Primes")
+        self.search_label = QLabel(self)
+        self.search_label.setText("Search from:")
         
-        self.layout = QGridLayout()
-        self.layout.addItem(QSpacerItem(20, 200), 1, 1, 3)
-        self.layout.addItem(QSpacerItem(30, 10), 1, 2)
-        self.layout.addWidget(self.lower_bound, 1, 3)
-        self.layout.addWidget(self.upper_bound, 1, 4)
-        self.layout.addWidget(self.button, 1, 5)
-        self.layout.addItem(QSpacerItem(30, 10), 1, 6)
-        self.layout.addItem(QSpacerItem(20, 200), 1, 7, 3)
+        self.to_label = QLabel(self)
+        self.to_label.setText(" to ")
         
-        #self.progress_bar = QProgressBar(self)
-        #self.progress_bar.setRange(self.lower_bound.value(), self.upper_bound.value())
-        #self.progress_bar.setTextVisible(False)
+        self.tabs = QTabWidget()
         
-        #self.layout.addWidget(self.progress_bar, 2, 2, 1, 5)
+        self.search_range_page_layout = QGridLayout()
         
         self.text_area = QPlainTextEdit(self)
         
-        self.layout.addWidget(self.text_area, 2, 2, 1, 5)
-        self.setLayout(self.layout)
+        self.copy_button = QPushButton("Copy Primes to Clipboard")
+        self.copy_button.clicked.connect(self.copy_text_area)
         
-        self.button.clicked.connect(self.get_primes)
+        # Create the sub-layout for organizing the search controls
+        self.search_box_layout = QGridLayout()
+        self.search_box_layout.addWidget(self.search_label, 1, 1)
+        self.search_box_layout.addWidget(self.lower_bound, 1, 2)
+        self.search_box_layout.addWidget(self.to_label, 1, 3)
+        self.search_box_layout.addWidget(self.upper_bound, 1, 4)
+        self.search_box_layout.addWidget(self.search_button, 2, 3, 1, 2)
+        self.search_box_layout.addWidget(self.text_area, 3, 1, 1, 4)
+        self.search_box_layout.addWidget(self.copy_button, 4, 1, 1, 4)
+        
+        # Finalize the search control area
+        self.search_box.setLayout(self.search_box_layout)
+        # Add text area before searching?
+        # How about the copy button?
+        
+        self.tabs.addTab(self.search_box, "Search")
+        
+        self.setCentralWidget(self.tabs)
+        
+        self.search_button.clicked.connect(self.get_primes)
         
     def check_spinbox_values(self):
         if self.lower_bound.value() >= self.upper_bound.value():
@@ -55,19 +68,27 @@ class Form(QDialog):
             self.alert.show()
 
     def get_primes(self):
-        self.text_area.clear()
-        
         progress_window = QProgressDialog("Searching for prime numbers...", "Abort", self.lower_bound.value(), self.upper_bound.value())
         
-        sieve.find_primes_in_range(self.lower_bound.value(), self.upper_bound.value(), progress_window)
+        primes = sieve.find_primes_in_range(self.lower_bound.value(), self.upper_bound.value(), progress_window)
+        self.text_area.setPlainText(self.output_primes(primes))
+    
+    def output_primes(self, primes):
+        text = ""
         
-        #t = Thread(target=sieve.find_primes_in_range, args=(self.lower_bound.value(), self.upper_bound.value(), self))
-        #t.start()
-            
+        for i in xrange(len(primes)):
+            text = text + str(primes[i]) + " "
+        
+        return text        
+
+    def copy_text_area(self):
+        self.text_area.selectAll()
+        self.text_area.copy()
+                
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     
-    form = Form()
-    form.show()
+    window = window()
+    window.show()
     
     sys.exit(app.exec_())
